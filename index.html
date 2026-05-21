@@ -21,6 +21,8 @@
           <nav class="utility" aria-label="游戏功能">
             <button id="atlasBtn" type="button">图鉴</button>
             <button id="jointBtn" type="button">跨专业</button>
+            <button id="progressBtn" type="button">进度</button>
+            <button id="exploreBtn" type="button">探索</button>
             <button id="saveBtn" type="button">SAVE</button>
             <button id="loadBtn" type="button">LOAD</button>
             <button id="configBtn" type="button">CONFIG</button>
@@ -139,6 +141,32 @@
           </header>
         </form>
         <section id="jointEvents" class="atlas-content" aria-label="跨专业事件"></section>
+      </dialog>
+
+      <dialog id="progressDialog" class="atlas-dialog">
+        <form method="dialog">
+          <header>
+            <div>
+              <p>Progress Hub</p>
+              <h2>成就、信赖与推荐报告</h2>
+            </div>
+            <button type="submit" aria-label="关闭进度中心">×</button>
+          </header>
+        </form>
+        <section id="progressHub" class="atlas-content" aria-label="成就、信赖与推荐报告"></section>
+      </dialog>
+
+      <dialog id="exploreDialog" class="atlas-dialog">
+        <form method="dialog">
+          <header>
+            <div>
+              <p>Campus Explore</p>
+              <h2>7 天日历、校园地图与项目任务</h2>
+            </div>
+            <button type="submit" aria-label="关闭探索模式">×</button>
+          </header>
+        </form>
+        <section id="exploreHub" class="atlas-content" aria-label="探索模式"></section>
       </dialog>
     </main>
 

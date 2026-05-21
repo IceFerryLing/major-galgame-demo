@@ -1431,6 +1431,174 @@ dialog label {
   opacity: 0.56;
 }
 
+.progress-section,
+.explore-section,
+.report-card {
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid rgba(159, 222, 255, 0.28);
+  background: rgba(5, 15, 32, 0.58);
+}
+
+.progress-section header,
+.explore-section header,
+.report-card header {
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.progress-section header span,
+.explore-section header span,
+.report-card header span {
+  color: var(--cyan);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progress-section h3,
+.explore-section h3,
+.report-card h3 {
+  margin: 4px 0 0;
+}
+
+.report-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.report-ranks,
+.achievement-grid,
+.trust-grid,
+.calendar-grid,
+.map-grid,
+.project-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.report-ranks {
+  margin-top: 12px;
+}
+
+.report-ranks span,
+.trust-grid span {
+  display: grid;
+  grid-template-columns: minmax(110px, 1fr) 1.4fr 42px;
+  gap: 8px;
+  align-items: center;
+}
+
+.report-ranks b,
+.trust-grid strong {
+  color: var(--ink);
+}
+
+.report-ranks i,
+.trust-grid i {
+  height: 8px;
+  border: 1px solid rgba(159, 222, 255, 0.24);
+  background: linear-gradient(90deg, var(--cyan) var(--score), rgba(236, 248, 255, 0.1) var(--score));
+}
+
+.report-ranks em,
+.trust-grid b {
+  color: var(--gold);
+  font-style: normal;
+  font-weight: 900;
+  text-align: right;
+}
+
+.achievement-grid,
+.trust-grid,
+.map-grid,
+.project-grid {
+  grid-template-columns: repeat(2, minmax(240px, 1fr));
+}
+
+.calendar-grid {
+  grid-template-columns: repeat(2, minmax(250px, 1fr));
+}
+
+.achievement-grid article,
+.trust-grid article,
+.calendar-grid article,
+.map-grid article,
+.project-grid article {
+  padding: 12px;
+  border: 1px solid rgba(159, 222, 255, 0.22);
+  background: rgba(236, 248, 255, 0.06);
+}
+
+.achievement-grid article.done,
+.calendar-grid article.done,
+.map-grid article.done {
+  border-color: rgba(114, 240, 176, 0.42);
+  background: rgba(114, 240, 176, 0.08);
+}
+
+.achievement-grid strong,
+.calendar-grid span,
+.project-grid > article > span {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.achievement-grid h4,
+.calendar-grid h4,
+.project-grid h4 {
+  margin: 6px 0;
+}
+
+.achievement-grid p,
+.trust-grid p,
+.calendar-grid p,
+.map-grid p,
+.project-grid p {
+  margin: 6px 0 10px;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.trust-grid button,
+.calendar-grid button,
+.map-grid button,
+.project-grid button {
+  min-height: 34px;
+  margin: 4px 6px 4px 0;
+  padding: 7px 10px;
+  border: 1px solid rgba(159, 222, 255, 0.38);
+  color: var(--ink);
+  background: rgba(236, 248, 255, 0.1);
+  cursor: pointer;
+}
+
+.trust-grid button:not(:disabled):hover,
+.trust-grid button:not(:disabled):focus-visible,
+.calendar-grid button:not(:disabled):hover,
+.calendar-grid button:not(:disabled):focus-visible,
+.map-grid button:not(:disabled):hover,
+.map-grid button:not(:disabled):focus-visible,
+.project-grid button:not(:disabled):hover,
+.project-grid button:not(:disabled):focus-visible {
+  outline: none;
+  border-color: #fff;
+  box-shadow: 0 0 14px rgba(118, 220, 255, 0.26);
+}
+
+.trust-grid button:disabled,
+.calendar-grid button:disabled,
+.map-grid button:disabled,
+.project-grid button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
 .paused .holo-grid::after,
 .paused .scene::before {
   display: none;
@@ -1514,6 +1682,11 @@ dialog label {
   .advice-grid,
   .joint-grid,
   .reward-grid,
+  .achievement-grid,
+  .trust-grid,
+  .calendar-grid,
+  .map-grid,
+  .project-grid,
   .knowledge-grid {
     grid-template-columns: 1fr;
   }

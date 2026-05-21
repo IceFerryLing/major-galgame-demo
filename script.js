@@ -240,6 +240,36 @@ const knowledgeRewardRoutes = {
       ["intro", "↺", "带着交叉画像重新选择", "回到五个专业"]
     ],
     ending: true
+  },
+  epilogueCs: {
+    speaker: "洛泠",
+    focus: "cs",
+    text: "后日谈：一周后的实验室。洛泠把导览 AI 的新版本部署到测试服务器，你负责看日志。第一条真实用户反馈弹出来时，她没有立刻庆祝，只是把椅子往你这边挪了一点：这次不是 demo 了，是我们一起维护的系统。窗外的路灯亮起来，你忽然觉得，选择专业也像部署项目，真正开始是在点击确认之后。",
+    ending: true
+  },
+  epilogueEe: {
+    speaker: "栖禾",
+    focus: "ee",
+    text: "后日谈：联调前夜。栖禾把微电网实验记录摊开，旁边放着给你留的热饮。她说，稳定不是没有波动，而是波动来临时仍然有余量。你们一起检查保护阈值和储能策略，实验楼的灯安静地亮着。她笑着补了一句：明天要早起，所以今晚别一个人硬撑。",
+    ending: true
+  },
+  epilogueAuto: {
+    speaker: "青岚",
+    focus: "auto",
+    text: "后日谈：第一次小组展示。机器人沿着你们调好的路线稳稳穿过障碍，青岚站在一旁，手里还攥着应急遥控器。演示结束后，她只说了两个字：不错。过了几秒，她又把下一张任务地图发给你：下次难度更高，你还来。你看见备注里写着：固定搭档。",
+    ending: true
+  },
+  epilogueIc: {
+    speaker: "微澜",
+    focus: "ic",
+    text: "后日谈：项目答辩当天。微澜把时序报告翻到最后一页，红色告警已经清零。她把演示板交给你，指示灯亮起的瞬间，整间教室安静了一秒。她轻声说，芯片世界很慢，也很值得。然后她在你的笔记本角落写下：下一版，我们一起从需求开始。",
+    ending: true
+  },
+  epilogueComm: {
+    speaker: "星遥",
+    focus: "comm",
+    text: "后日谈：屋顶复测。星遥把天线转到新的角度，链路质量一点点爬升。她把耳机递给你，里面传来无人车端稳定的视频流。她说，连接成功有时候不是因为距离变近，而是因为有人愿意一遍遍调到更稳。风很大，但这次信号没有断。",
+    ending: true
   }
 };
 
@@ -638,6 +668,64 @@ const majorRouteMarkers = {
   comm: ["comm", "commTheory", "commTheoryMore", "commGame", "commLab", "commNetworkPromise", "commSecurePromise"]
 };
 
+const epilogueRoutesByMajor = {
+  cs: "epilogueCs",
+  ee: "epilogueEe",
+  auto: "epilogueAuto",
+  ic: "epilogueIc",
+  comm: "epilogueComm"
+};
+
+const trustRouteGain = {
+  cs: ["cs", "csTheory", "csTheoryMore", "csGame", "csLab", "csAiPromise", "csSysPromise", "knowledgeRewardCs"],
+  ee: ["ee", "eeTheory", "eeTheoryMore", "eeGame", "eeLab", "eeGridPromise", "eePowerPromise", "knowledgeRewardEe"],
+  auto: ["auto", "autoTheory", "autoTheoryMore", "autoGame", "autoLab", "autoRobotPromise", "autoEmbedPromise", "knowledgeRewardAuto"],
+  ic: ["ic", "icTheory", "icTheoryMore", "icGame", "icLab", "icDesignPromise", "icVerifyPromise", "knowledgeRewardIc"],
+  comm: ["comm", "commTheory", "commTheoryMore", "commGame", "commLab", "commNetworkPromise", "commSecurePromise", "knowledgeRewardComm"]
+};
+
+const achievementDefinitions = [
+  { id: "first-game", title: "第一次实验完成", desc: "完成任意一个专业小游戏。", test: () => ["csLab", "eeLab", "autoLab", "icLab", "commLab"].some(hasVisitedRoute) },
+  { id: "major-cards", title: "专业知识收集者", desc: "集齐任意一个专业的知识卡。", test: () => Object.keys(majorArchive).some(isMajorKnowledgeComplete) },
+  { id: "all-joints", title: "跨专业联调大师", desc: "完成全部跨专业事件。", test: () => jointEvents.every(isJointEventCompleted) },
+  { id: "interdisciplinary", title: "交叉学科候选人", desc: "解锁交叉学科隐藏结局。", test: () => hasVisitedRoute("interdisciplinaryHidden") },
+  { id: "clear-review", title: "错题本清空", desc: "至少获得 30 理解值，并清空错题本。", test: () => (collectionState.understanding || 0) >= 30 && (collectionState.wrongQuizCards || []).length === 0 }
+];
+
+const calendarEvents = [
+  { id: "lecture-ai", day: 1, slot: "上午", title: "AI 导览讲座", place: "讲座厅", major: "cs", route: "csTheory", gain: "logic" },
+  { id: "lab-energy", day: 1, slot: "下午", title: "微电网开放实验", place: "实验室", major: "ee", route: "eeGame", gain: "team" },
+  { id: "robot-demo", day: 2, slot: "上午", title: "机器人队演示", place: "创新工坊", major: "auto", route: "autoGame", gain: "team" },
+  { id: "chip-night", day: 2, slot: "下午", title: "芯片版图夜谈", place: "创新工坊", major: "ic", route: "icTheory", gain: "logic" },
+  { id: "roof-link", day: 3, slot: "上午", title: "屋顶链路复测", place: "屋顶", major: "comm", route: "commGame", gain: "passion" },
+  { id: "library-review", day: 3, slot: "下午", title: "图书馆知识复习", place: "图书馆", major: "cs", route: "csTheoryMore", gain: "logic" },
+  { id: "joint-briefing", day: 4, slot: "上午", title: "跨专业项目简报", place: "讲座厅", major: "auto", route: "jointCsAuto", gain: "team" },
+  { id: "dorm-talk", day: 4, slot: "下午", title: "宿舍楼下专业夜聊", place: "宿舍楼", major: "comm", route: "commTheoryMore", gain: "passion" },
+  { id: "power-module", day: 5, slot: "上午", title: "功率模块拆解", place: "实验室", major: "ee", route: "jointEeIc", gain: "logic" },
+  { id: "chip-review", day: 5, slot: "下午", title: "RTL Review", place: "创新工坊", major: "ic", route: "icTheoryMore", gain: "logic" },
+  { id: "project-day", day: 6, slot: "上午", title: "项目制任务冲刺", place: "实验室", major: "auto", route: "autoLab", gain: "team" },
+  { id: "final-report", day: 6, slot: "下午", title: "专业推荐报告整理", place: "图书馆", major: "cs", route: "knowledgeFinalArchive", gain: "passion" },
+  { id: "open-demo", day: 7, slot: "上午", title: "开放日联调展示", place: "讲座厅", major: "comm", route: "jointAutoComm", gain: "team" },
+  { id: "choice-evening", day: 7, slot: "下午", title: "最终选择前夜", place: "屋顶", major: "cs", route: "interdisciplinaryHidden", gain: "passion" }
+];
+
+const campusLocations = [
+  { id: "lab", name: "实验室", desc: "适合触发专业实验、能源调度和项目冲刺。", routes: ["eeGame", "autoLab", "jointAutoEe"] },
+  { id: "library", name: "图书馆", desc: "适合复习知识卡、整理错题和生成推荐报告。", routes: ["csTheoryMore", "icTheoryMore", "knowledgeFinalArchive"] },
+  { id: "roof", name: "屋顶", desc: "适合通信链路、未来网络和选择前夜剧情。", routes: ["commGame", "commTheoryMore", "interdisciplinaryHidden"] },
+  { id: "workshop", name: "创新工坊", desc: "适合机器人、芯片和跨专业硬件项目。", routes: ["autoGame", "icGame", "jointAutoIc"] },
+  { id: "dorm", name: "宿舍楼", desc: "适合角色夜聊、信赖提升和后日谈。", routes: ["epilogueCs", "epilogueEe", "epilogueComm"] },
+  { id: "hall", name: "讲座厅", desc: "适合讲座、展示和跨专业项目简报。", routes: ["csTheory", "jointCsComm", "jointIcComm"] }
+];
+
+const projectTasks = [
+  { id: "ai-guide", name: "AI 导览组", major: "cs", desc: "把地图数据、推荐算法和真实反馈串成服务。", routes: ["csLab", "jointCsComm"], milestones: ["完成导览 AI 实验", "完成智能导览网络"] },
+  { id: "robot-team", name: "机器人队", major: "auto", desc: "完成导航、控制和远程联调任务。", routes: ["autoLab", "jointAutoComm"], milestones: ["完成机器人导航", "完成远程无人车联调"] },
+  { id: "chip-shop", name: "芯片工坊", major: "ic", desc: "从 RTL、时序到低功耗模块做一次完整 review。", routes: ["icLab", "jointIcComm"], milestones: ["完成版图布线", "完成低功耗基带模块"] },
+  { id: "green-campus", name: "低碳校园组", major: "ee", desc: "围绕负载预测、储能和应急供能建立方案。", routes: ["eeLab", "jointCsEe"], milestones: ["完成微电网调度", "完成 AI 能源调度"] },
+  { id: "wireless-link", name: "无线联调组", major: "comm", desc: "围绕链路可靠性、编码和中继完成联调。", routes: ["commLab", "jointEeComm"], milestones: ["完成链路配置", "完成应急通信供能"] }
+];
+
 const state = {
   current: "intro",
   logic: 0,
@@ -656,7 +744,12 @@ const collectionState = {
   solvedQuizzes: {},
   quizFeedback: {},
   wrongQuizCards: [],
-  understanding: 0
+  understanding: 0,
+  achievements: [],
+  trust: { cs: 0, ee: 0, auto: 0, ic: 0, comm: 0 },
+  calendarDone: [],
+  locationVisits: [],
+  projectProgress: {}
 };
 
 const speakerEl = document.querySelector("#speaker");
@@ -668,13 +761,19 @@ const teamEl = document.querySelector("#teamScore");
 const configDialog = document.querySelector("#configDialog");
 const atlasDialog = document.querySelector("#atlasDialog");
 const jointDialog = document.querySelector("#jointDialog");
+const progressDialog = document.querySelector("#progressDialog");
+const exploreDialog = document.querySelector("#exploreDialog");
 const atlasBtn = document.querySelector("#atlasBtn");
 const jointBtn = document.querySelector("#jointBtn");
+const progressBtn = document.querySelector("#progressBtn");
+const exploreBtn = document.querySelector("#exploreBtn");
 const majorTab = document.querySelector("#majorTab");
 const knowledgeTab = document.querySelector("#knowledgeTab");
 const majorArchiveEl = document.querySelector("#majorArchive");
 const knowledgeCardsEl = document.querySelector("#knowledgeCards");
 const jointEventsEl = document.querySelector("#jointEvents");
+const progressHubEl = document.querySelector("#progressHub");
+const exploreHubEl = document.querySelector("#exploreHub");
 const speedRange = document.querySelector("#speedRange");
 const ambientToggle = document.querySelector("#ambientToggle");
 const labTableEl = document.querySelector(".lab-table");
@@ -724,11 +823,14 @@ function rememberRoute(routeId) {
     state.visitedRoutes.push(routeId);
   }
   collectionState.unlockedRoutes = collectionState.unlockedRoutes || ["intro"];
+  const isNewCollectionRoute = !collectionState.unlockedRoutes.includes(routeId);
   if (!collectionState.unlockedRoutes.includes(routeId)) {
     collectionState.unlockedRoutes.push(routeId);
-    saveCollectionState();
   }
+  if (isNewCollectionRoute) increaseTrustForRoute(routeId);
   rememberJointCompletion(routeId);
+  evaluateAchievements();
+  saveCollectionState();
 }
 
 function loadCollectionState() {
@@ -743,6 +845,11 @@ function loadCollectionState() {
     collectionState.quizFeedback = collectionState.quizFeedback || {};
     collectionState.wrongQuizCards = collectionState.wrongQuizCards || [];
     collectionState.understanding = collectionState.understanding || 0;
+    collectionState.achievements = collectionState.achievements || [];
+    collectionState.trust = { cs: 0, ee: 0, auto: 0, ic: 0, comm: 0, ...(collectionState.trust || {}) };
+    collectionState.calendarDone = collectionState.calendarDone || [];
+    collectionState.locationVisits = collectionState.locationVisits || [];
+    collectionState.projectProgress = collectionState.projectProgress || {};
   } catch {
     localStorage.removeItem("majorGalgameCollection");
   }
@@ -750,6 +857,32 @@ function loadCollectionState() {
 
 function saveCollectionState() {
   localStorage.setItem("majorGalgameCollection", JSON.stringify(collectionState));
+}
+
+function increaseTrustForRoute(routeId) {
+  collectionState.trust = collectionState.trust || { cs: 0, ee: 0, auto: 0, ic: 0, comm: 0 };
+  Object.entries(trustRouteGain).forEach(([majorId, routeIds]) => {
+    if (routeIds.includes(routeId)) {
+      collectionState.trust[majorId] = Math.min(100, (collectionState.trust[majorId] || 0) + 10);
+    }
+  });
+  jointEvents.forEach((event) => {
+    if (routeId === event.route || routeId === getJointEventEndRoute(event)) {
+      event.pair.split("×").forEach((part) => {
+        const majorId = Object.keys(majorArchive).find((id) => part.includes(majorArchive[id].name.slice(0, 2)) || part.includes(majorArchive[id].name));
+        if (majorId) collectionState.trust[majorId] = Math.min(100, (collectionState.trust[majorId] || 0) + 6);
+      });
+    }
+  });
+}
+
+function evaluateAchievements() {
+  collectionState.achievements = collectionState.achievements || [];
+  achievementDefinitions.forEach((achievement) => {
+    if (achievement.test() && !collectionState.achievements.includes(achievement.id)) {
+      collectionState.achievements.push(achievement.id);
+    }
+  });
 }
 
 function isCardUnlocked(card) {
@@ -813,6 +946,7 @@ function answerQuiz(cardId, selectedIndex) {
       collectionState.wrongQuizCards.push(cardId);
     }
   }
+  evaluateAchievements();
   saveCollectionState();
 }
 
@@ -891,6 +1025,132 @@ function canUnlockInterdisciplinaryEnding() {
   const progressedMajors = getMajorExplorationProgress().filter((item) => item.score >= 4);
   const completedJointCount = jointEvents.filter(isJointEventCompleted).length;
   return progressedMajors.length >= 3 && (collectionState.understanding || 0) >= 30 && completedJointCount >= 1;
+}
+
+function isRouteAvailable(routeId) {
+  if (routeId === "knowledgeFinalArchive") return hasFullFavoriteCollection();
+  if (routeId === "interdisciplinaryHidden") return canUnlockInterdisciplinaryEnding();
+  const epilogueMajor = Object.entries(epilogueRoutesByMajor).find(([, epilogueRoute]) => epilogueRoute === routeId)?.[0];
+  if (epilogueMajor) return (collectionState.trust?.[epilogueMajor] || 0) >= 50 || hasVisitedRoute(routeId);
+  const jointEvent = jointEvents.find((event) => event.route === routeId);
+  if (jointEvent) return isJointEventUnlocked(jointEvent);
+  return Boolean(routes[routeId]);
+}
+
+function getRecommendedMajors() {
+  return getMajorExplorationProgress()
+    .map((item) => ({
+      ...item,
+      trust: collectionState.trust?.[item.id] || 0,
+      total: item.score * 8 + (collectionState.trust?.[item.id] || 0)
+    }))
+    .sort((a, b) => b.total - a.total);
+}
+
+function getTrainingAdvice(majorId) {
+  const advice = {
+    cs: "建议继续做完整软件项目：需求、数据结构、接口、测试和部署都要跑通。",
+    ee: "建议多做仿真和实验复盘，把波形、器件状态和系统约束联系起来。",
+    auto: "建议从仿真走向硬件联调，重点记录延迟、噪声和误差如何影响控制。",
+    ic: "建议练习 RTL、testbench、波形和时序报告，把功能正确推进到约束满足。",
+    comm: "建议用仿真观察调制、编码、信道和协议选择对可靠性的影响。"
+  };
+  return advice[majorId];
+}
+
+function renderRecommendationReport() {
+  const recommendations = getRecommendedMajors();
+  const primary = recommendations[0];
+  const secondary = recommendations[1];
+  const profile = getAptitudeProfile();
+  return `
+    <section class="report-card">
+      <header>
+        <span>Recommendation</span>
+        <h3>专业推荐报告</h3>
+      </header>
+      <p>主推荐：${primary.icon} ${primary.name}。副方向：${secondary.icon} ${secondary.name}。当前画像为「${profile.title}」，${profile.desc}</p>
+      <div class="report-ranks">
+        ${recommendations
+          .map((item) => `
+            <span>
+              <b>${item.icon} ${item.name}</b>
+              <i style="--score:${Math.min(100, item.total)}%"></i>
+              <em>${item.total}</em>
+            </span>
+          `)
+          .join("")}
+      </div>
+      <p>${getTrainingAdvice(primary.id)}</p>
+    </section>
+  `;
+}
+
+function renderAchievements() {
+  evaluateAchievements();
+  return `
+    <section class="progress-section">
+      <header><span>Achievement</span><h3>成就系统</h3></header>
+      <div class="achievement-grid">
+        ${achievementDefinitions
+          .map((achievement) => {
+            const unlocked = collectionState.achievements.includes(achievement.id);
+            return `
+              <article class="${unlocked ? "done" : ""}">
+                <strong>${unlocked ? "DONE" : "LOCKED"}</strong>
+                <h4>${achievement.title}</h4>
+                <p>${achievement.desc}</p>
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderTrustPanel() {
+  return `
+    <section class="progress-section">
+      <header><span>Trust</span><h3>角色信赖度</h3></header>
+      <div class="trust-grid">
+        ${Object.entries(majorArchive)
+          .map(([majorId, major]) => {
+            const trust = collectionState.trust?.[majorId] || 0;
+            const epilogueUnlocked = trust >= 50 || hasVisitedRoute(epilogueRoutesByMajor[majorId]);
+            return `
+              <article>
+                <strong>${major.icon} ${profiles[majorId]?.name || major.name}</strong>
+                <span style="--score:${trust}%"><i></i><b>${trust}</b></span>
+                <p>${trust >= 80 ? "信赖很高，已适合解锁更多后日谈。" : trust >= 50 ? "信赖达标，后日谈入口已开放。" : "继续角色路线、知识卡和跨专业事件可提升信赖。"}</p>
+                <button type="button" data-progress-route="${epilogueRoutesByMajor[majorId]}" ${epilogueUnlocked ? "" : "disabled"}>${epilogueUnlocked ? "查看后日谈" : "信赖 50 解锁"}</button>
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderProgressHub() {
+  progressHubEl.innerHTML = `
+    <div class="collection-stats">
+      <span>成就 ${collectionState.achievements.length}/${achievementDefinitions.length}</span>
+      <span>理解值 ${collectionState.understanding || 0}/100</span>
+      <span>图鉴称号 ${getFavoriteRewardTier().title}</span>
+    </div>
+    ${renderRecommendationReport()}
+    ${renderAchievements()}
+    ${renderTrustPanel()}
+  `;
+
+  progressHubEl.querySelectorAll("[data-progress-route]").forEach((button) => {
+    button.addEventListener("click", () => {
+      progressDialog.close();
+      render(button.dataset.progressRoute);
+    });
+  });
 }
 
 function renderEndingInsights(route) {
@@ -1545,6 +1805,139 @@ function renderJointEvents() {
   });
 }
 
+function completeCalendarEvent(eventId) {
+  const event = calendarEvents.find((item) => item.id === eventId);
+  if (!event) return;
+  collectionState.calendarDone = collectionState.calendarDone || [];
+  if (!collectionState.calendarDone.includes(eventId)) {
+    collectionState.calendarDone.push(eventId);
+    state[event.gain] = (state[event.gain] || 0) + 1;
+    increaseTrustForRoute(event.route);
+    evaluateAchievements();
+    saveCollectionState();
+    updateScores();
+  }
+}
+
+function visitLocation(locationId) {
+  collectionState.locationVisits = collectionState.locationVisits || [];
+  if (!collectionState.locationVisits.includes(locationId)) {
+    collectionState.locationVisits.push(locationId);
+    saveCollectionState();
+  }
+}
+
+function completeProjectTask(projectId, routeId) {
+  collectionState.projectProgress = collectionState.projectProgress || {};
+  collectionState.projectProgress[projectId] = collectionState.projectProgress[projectId] || [];
+  if (!collectionState.projectProgress[projectId].includes(routeId)) {
+    collectionState.projectProgress[projectId].push(routeId);
+    saveCollectionState();
+  }
+}
+
+function renderCalendarPlanner() {
+  return `
+    <section class="explore-section">
+      <header><span>7 Days</span><h3>7 天专业选择日历</h3></header>
+      <div class="calendar-grid">
+        ${calendarEvents
+          .map((event) => {
+            const done = (collectionState.calendarDone || []).includes(event.id);
+            const available = isRouteAvailable(event.route);
+            return `
+              <article class="${done ? "done" : ""}">
+                <span>Day ${event.day} · ${event.slot}</span>
+                <h4>${event.title}</h4>
+                <p>${event.place} / ${majorArchive[event.major].name}</p>
+                <button type="button" data-calendar-event="${event.id}" data-explore-route="${event.route}" ${available ? "" : "disabled"}>${done ? "再次前往" : available ? "选择行动" : "条件不足"}</button>
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderCampusMap() {
+  return `
+    <section class="explore-section">
+      <header><span>Map</span><h3>校园地图探索</h3></header>
+      <div class="map-grid">
+        ${campusLocations
+          .map((location) => {
+            const visited = (collectionState.locationVisits || []).includes(location.id);
+            return `
+              <article class="${visited ? "done" : ""}">
+                <strong>${location.name}</strong>
+                <p>${location.desc}</p>
+                <div>
+                  ${location.routes
+                    .map((routeId) => `<button type="button" data-location="${location.id}" data-explore-route="${routeId}" ${isRouteAvailable(routeId) ? "" : "disabled"}>${routes[routeId]?.speaker || "隐藏事件"}</button>`)
+                    .join("")}
+                </div>
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderProjectTasks() {
+  return `
+    <section class="explore-section">
+      <header><span>Project</span><h3>专业社团 / 项目制任务</h3></header>
+      <div class="project-grid">
+        ${projectTasks
+          .map((project) => {
+            const doneRoutes = collectionState.projectProgress?.[project.id] || [];
+            return `
+              <article>
+                <span>${majorArchive[project.major].icon} ${project.name}</span>
+                <h4>${project.desc}</h4>
+                <p>完成度 ${doneRoutes.length}/${project.routes.length}</p>
+                <div>
+                  ${project.routes
+                    .map((routeId, index) => `
+                      <button type="button" data-project="${project.id}" data-explore-route="${routeId}" ${isRouteAvailable(routeId) ? "" : "disabled"}>${doneRoutes.includes(routeId) ? "DONE" : project.milestones[index]}</button>
+                    `)
+                    .join("")}
+                </div>
+              </article>
+            `;
+          })
+          .join("")}
+      </div>
+    </section>
+  `;
+}
+
+function renderExploreHub() {
+  exploreHubEl.innerHTML = `
+    <div class="collection-stats">
+      <span>日历 ${collectionState.calendarDone.length}/${calendarEvents.length}</span>
+      <span>地点 ${collectionState.locationVisits.length}/${campusLocations.length}</span>
+      <span>项目 ${Object.values(collectionState.projectProgress || {}).flat().length}/${projectTasks.reduce((sum, item) => sum + item.routes.length, 0)}</span>
+    </div>
+    ${renderCalendarPlanner()}
+    ${renderCampusMap()}
+    ${renderProjectTasks()}
+  `;
+
+  exploreHubEl.querySelectorAll("[data-explore-route]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.calendarEvent) completeCalendarEvent(button.dataset.calendarEvent);
+      if (button.dataset.location) visitLocation(button.dataset.location);
+      if (button.dataset.project) completeProjectTask(button.dataset.project, button.dataset.exploreRoute);
+      exploreDialog.close();
+      render(button.dataset.exploreRoute);
+    });
+  });
+}
+
 function switchAtlasTab(target) {
   const isMajor = target === "major";
   majorTab.classList.toggle("active", isMajor);
@@ -1656,6 +2049,17 @@ jointBtn.addEventListener("click", () => {
   loadCollectionState();
   renderJointEvents();
   jointDialog.showModal();
+});
+progressBtn.addEventListener("click", () => {
+  loadCollectionState();
+  evaluateAchievements();
+  renderProgressHub();
+  progressDialog.showModal();
+});
+exploreBtn.addEventListener("click", () => {
+  loadCollectionState();
+  renderExploreHub();
+  exploreDialog.showModal();
 });
 majorTab.addEventListener("click", () => switchAtlasTab("major"));
 knowledgeTab.addEventListener("click", () => switchAtlasTab("knowledge"));
